@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>METRISCAN - Dashboard</title>
+
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="bg-glow cyan-glow"></div>
+    <div class="bg-glow blue-glow"></div>
+    <div class="bg-glow purple-glow"></div>
+    <div class="grid"></div>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="logo-mark">M</div>
+
+            <div class="brand-name">
+                <span>METRI</span>
+                <span>SCAN</span>
+            </div>
+
+        </div>
+
+        <div class="brand-subtitle">
+            Legal Metrology • Smart Verification
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="#" class="nav-item" id="scanNav">
+                <span class="nav-icon">▣</span>
+                <span>Scan & Verify</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">◷</span>
+                <span>History</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">▤</span>
+                <span>Reports</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">♙</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="mission-icon">♢</div>
+
+            <p>
+                Ensuring Fair Trade
+                <br>
+                For A Better Tomorrow
+            </p>
+
+            <div class="mission-line"></div>
+
+            <div class="sidebar-footer">
+
+                <span>METRISCAN</span>
+
+                <span>v1.0.0</span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN AREA
+    ========================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <button class="menu-btn" id="menuBtn">
+                ☰
+            </button>
+
+            <div class="topbar-right">
+
+                <button class="notification-btn">
+                    ♧
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="profile">
+
+                    <div class="profile-avatar">
+                        ID
+                    </div>
+
+                    <div class="profile-info">
+                        <strong>Inspector Demo</strong>
+                        <span>Inspector</span>
+                    </div>
+
+                    <span class="profile-arrow">⌄</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             DASHBOARD CONTENT
+        ========================== -->
+
+        <section class="dashboard">
+
+
+            <!-- WELCOME -->
+
+            <div class="welcome-section">
+
+                <div>
+
+                    <h1>
+                        Welcome back,
+                        <span>Inspector!</span>
+                    </h1>
+
+                    <p>
+                        Verify. Ensure. Comply.
+                    </p>
+
+                </div>
+
+                <div class="date-box">
+
+                    <span class="calendar-icon">▣</span>
+
+                    <div>
+                        <strong id="currentDate">
+                            Thursday, 11 September 2026
+                        </strong>
+
+                        <span>
+                            Let's make markets more transparent.
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 STAT CARDS
+            ========================== -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon cyan">
+                        ▤
+                    </div>
+
+                    <div>
+                        <span class="stat-number">24</span>
+
+                        <p>Products Scanned</p>
+
+                        <small>+5 today</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        ✓
+                    </div>
+
+                    <div>
+                        <span class="stat-number">18</span>
+
+                        <p>Compliant</p>
+
+                        <small>75% of total</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon red">
+                        ×
+                    </div>
+
+                    <div>
+                        <span class="stat-number">4</span>
+
+                        <p>Non-Compliant</p>
+
+                        <small>17% of total</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon yellow">
+                        !
+                    </div>
+
+                    <div>
+                        <span class="stat-number">2</span>
+
+                        <p>Needs Review</p>
+
+                        <small>8% of total</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 SCAN + HOW IT WORKS
+            ========================== -->
+
+            <div class="main-grid">
+
+
+                <!-- SCAN CARD -->
+
+                <div class="scan-card">
+
+                    <div class="section-heading">
+
+                        <div class="scan-main-icon">
+                            ▣
+                        </div>
+
+                        <div>
+                            <h2>Scan a Product</h2>
+
+                            <p>
+                                Upload an image of the product package or label
+                                to verify compliance with Legal Metrology rules.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="upload-area"
+                        id="uploadArea"
+                    >
+
+                        <div class="upload-icon">
+                            ↑
+                        </div>
+
+                        <h3>
+                            Drag & drop an image here
+                        </h3>
+
+                        <span>or</span>
+
+                        <button
+                            class="choose-btn"
+                            id="chooseBtn"
+                        >
+                            ▧ &nbsp; Choose File
+                        </button>
+
+                        <input
+                            type="file"
+                            id="fileInput"
+                            accept="image/png,image/jpeg,image/jpg"
+                            hidden
+                        >
+
+                        <p class="file-info">
+                            Supported formats: JPG, PNG, JPEG
+                            (Max 10 MB)
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- HOW IT WORKS -->
+
+                <div class="workflow-card">
+
+                    <div class="workflow-heading">
+                        <span>⚙</span>
+                        <h2>How it works?</h2>
+                    </div>
+
+
+                    <div class="steps">
+
+
+                        <div class="step">
+
+                            <div class="step-number blue-step">
+                                1
+                            </div>
+
+                            <div>
+                                <h3>Upload Image</h3>
+
+                                <p>
+                                    Upload or capture the product label
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="step">
+
+                            <div class="step-number purple-step">
+                                2
+                            </div>
+
+                            <div>
+                                <h3>Extract Information</h3>
+
+                                <p>
+                                    Our AI extracts key details using OCR
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="step">
+
+                            <div class="step-number green-step">
+                                3
+                            </div>
+
+                            <div>
+                                <h3>Check Compliance</h3>
+
+                                <p>
+                                    We verify against Legal Metrology rules
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="step">
+
+                            <div class="step-number cyan-step">
+                                4
+                            </div>
+
+                            <div>
+                                <h3>View Results</h3>
+
+                                <p>
+                                    Get a detailed compliance report
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 RECENT SCANS + ACTIONS
+            ========================== -->
+
+            <div class="bottom-grid">
+
+
+                <!-- RECENT SCANS -->
+
+                <div class="recent-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <span class="history-icon">◷</span>
+                            <h2>Recent Scans</h2>
+                        </div>
+
+                        <a href="#">
+                            View All →
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-header">
+
+                        <span>Product</span>
+                        <span>Date & Time</span>
+                        <span>Status</span>
+                        <span>Action</span>
+
+                    </div>
+
+
+                    <div class="scan-row">
+
+                        <div class="product-name">
+
+                            <div class="product-image maggi">
+                                M
+                            </div>
+
+                            <div>
+                                <strong>Sample Product A</strong>
+                                <small>Example Manufacturer</small>
+                            </div>
+
+                        </div>
+
+                        <span>
+                            11 Sep 2026, 10:24 AM
+                        </span>
+
+                        <span class="status compliant">
+                            Compliant
+                        </span>
+
+                        <button class="report-btn">
+                            View Report
+                        </button>
+
+                    </div>
+
+
+                    <div class="scan-row">
+
+                        <div class="product-name">
+
+                            <div class="product-image cola">
+                                P
+                            </div>
+
+                            <div>
+                                <strong>Sample Product B</strong>
+                                <small>Example Manufacturer</small>
+                            </div>
+
+                        </div>
+
+                        <span>
+                            11 Sep 2026, 09:15 AM
+                        </span>
+
+                        <span class="status non-compliant">
+                            Non-Compliant
+                        </span>
+
+                        <button class="report-btn">
+                            View Report
+                        </button>
+
+                    </div>
+
+
+                    <div class="scan-row">
+
+                        <div class="product-name">
+
+                            <div class="product-image salt">
+                                S
+                            </div>
+
+                            <div>
+                                <strong>Sample Product C</strong>
+                                <small>Example Manufacturer</small>
+                            </div>
+
+                        </div>
+
+                        <span>
+                            10 Sep 2026, 04:37 PM
+                        </span>
+
+                        <span class="status compliant">
+                            Compliant
+                        </span>
+
+                        <button class="report-btn">
+                            View Report
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div class="actions-card">
+
+                    <div class="card-header">
+                        <div>
+                            <span class="history-icon">ϟ</span>
+                            <h2>Quick Actions</h2>
+                        </div>
+                    </div>
+
+
+                    <button
+                        class="action-btn primary-action"
+                        id="scanAction"
+                    >
+                        <span>▣</span>
+                        Scan New Product
+                        <b>→</b>
+                    </button>
+
+
+                    <button class="action-btn">
+                        <span>◷</span>
+                        View History
+                        <b>→</b>
+                    </button>
+
+
+                    <button class="action-btn">
+                        <span>▤</span>
+                        Generate Report
+                        <b>→</b>
+                    </button>
+
+
+                    <button class="action-btn">
+                        <span>♙</span>
+                        Update Profile
+                        <b>→</b>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="dashboard.js"></script>
+
+</body>
+</html>
