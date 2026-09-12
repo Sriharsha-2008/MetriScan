@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scan History | METRISCAN</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- History CSS -->
+    <link rel="stylesheet" href="history.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo-container">
+            <div class="logo">
+                <span>METRI</span>
+                <span>SCAN</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="scan.html" class="nav-item">
+                <i class="fas fa-qrcode"></i>
+                <span>Scan & Verify</span>
+            </a>
+
+            <a href="history.html" class="nav-item active">
+                <i class="fas fa-clock-rotate-left"></i>
+                <span>History</span>
+            </a>
+
+            <a href="reports.html" class="nav-item">
+                <i class="fas fa-file-lines"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+
+            <a href="setting.html" class="nav-item">
+                <i class="fas fa-gear"></i>
+                <span>Settings</span>
+            </a>
+
+            <a href="scanner-checks.html" class="nav-item">
+                <i class="fas fa-shield-halved"></i>
+                <span>Scanner Checks</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-status">
+                <span class="status-dot"></span>
+                <span>System Online</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="topbar-title">
+                <span>Scan History</span>
+            </div>
+
+            <div class="topbar-user">
+
+                <div class="user-avatar" id="historyAvatar">
+                    ID
+                </div>
+
+                <div class="user-info">
+
+                    <span
+                        class="user-name"
+                        id="historyUserName"
+                    >
+                        Inspector Demo
+                    </span>
+
+                    <span
+                        class="user-role"
+                        id="historyUserRole"
+                    >
+                        Inspector
+                    </span>
+
+                </div>
+
+                <a
+                    href="profile.html"
+                    class="profile-link"
+                    title="View Profile"
+                >
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             PAGE CONTENT
+        ========================== -->
+
+        <section class="page-content">
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Scan History</h1>
+
+                    <p>
+                        View and manage your previous product
+                        compliance scans.
+                    </p>
+                </div>
+
+                <button
+                    class="clear-history-btn"
+                    id="clearHistoryBtn"
+                >
+                    <i class="fas fa-trash"></i>
+                    Clear History
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 SUMMARY CARDS
+            ========================== -->
+
+            <div class="history-stats">
+
+                <div class="history-stat-card">
+
+                    <div class="stat-icon total">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span class="stat-label">
+                            Total Scans
+                        </span>
+
+                        <strong
+                            class="stat-value"
+                            id="totalScans"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="history-stat-card">
+
+                    <div class="stat-icon compliant">
+                        <i class="fas fa-circle-check"></i>
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span class="stat-label">
+                            Compliant
+                        </span>
+
+                        <strong
+                            class="stat-value"
+                            id="compliantScans"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="history-stat-card">
+
+                    <div class="stat-icon non-compliant">
+                        <i class="fas fa-circle-xmark"></i>
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span class="stat-label">
+                            Non-Compliant
+                        </span>
+
+                        <strong
+                            class="stat-value"
+                            id="nonCompliantScans"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="history-stat-card">
+
+                    <div class="stat-icon review">
+                        <i class="fas fa-triangle-exclamation"></i>
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span class="stat-label">
+                            Needs Review
+                        </span>
+
+                        <strong
+                            class="stat-value"
+                            id="reviewScans"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 FILTER BAR
+            ========================== -->
+
+            <div class="filter-card">
+
+                <div class="search-box">
+
+                    <i class="fas fa-search"></i>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search product name or scan ID..."
+                    >
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="statusFilter">
+                        Status
+                    </label>
+
+                    <select id="statusFilter">
+
+                        <option value="all">
+                            All Status
+                        </option>
+
+                        <option value="compliant">
+                            Compliant
+                        </option>
+
+                        <option value="non-compliant">
+                            Non-Compliant
+                        </option>
+
+                        <option value="review">
+                            Needs Review
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="dateFilter">
+                        Date
+                    </label>
+
+                    <select id="dateFilter">
+
+                        <option value="all">
+                            All Dates
+                        </option>
+
+                        <option value="today">
+                            Today
+                        </option>
+
+                        <option value="week">
+                            Last 7 Days
+                        </option>
+
+                        <option value="month">
+                            Last 30 Days
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="reset-filter-btn"
+                    id="resetFilters"
+                >
+                    <i class="fas fa-rotate-left"></i>
+                    Reset
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 HISTORY TABLE
+            ========================== -->
+
+            <div class="history-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h2>Previous Scans</h2>
+
+                        <p>
+                            Your recent product verification activity
+                        </p>
+                    </div>
+
+                    <span
+                        class="result-count"
+                        id="resultCount"
+                    >
+                        0 scans
+                    </span>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table class="history-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Scan ID</th>
+
+                                <th>Product</th>
+
+                                <th>Date & Time</th>
+
+                                <th>Status</th>
+
+                                <th>Checks</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="historyTableBody">
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- EMPTY STATE -->
+
+                    <div
+                        class="empty-state"
+                        id="emptyState"
+                    >
+
+                        <div class="empty-icon">
+                            <i class="fas fa-clock-rotate-left"></i>
+                        </div>
+
+                        <h3>No Scan History</h3>
+
+                        <p>
+                            No scans match your current filters.
+                        </p>
+
+                        <a
+                            href="scan.html"
+                            class="start-scan-btn"
+                        >
+                            <i class="fas fa-qrcode"></i>
+                            Start New Scan
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         DETAILS MODAL
+    ========================== -->
+
+    <div
+        class="modal-overlay"
+        id="detailsModal"
+    >
+
+        <div class="details-modal">
+
+            <button
+                class="modal-close"
+                id="closeModal"
+            >
+                <i class="fas fa-xmark"></i>
+            </button>
+
+            <div class="modal-header">
+
+                <div class="modal-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+
+                <div>
+                    <h2 id="modalProductName">
+                        Product Details
+                    </h2>
+
+                    <span id="modalScanId">
+                        Scan ID
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="modal-details">
+
+                <div class="detail-row">
+
+                    <span>
+                        <i class="fas fa-calendar"></i>
+                        Date
+                    </span>
+
+                    <strong id="modalDate">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        <i class="fas fa-clock"></i>
+                        Time
+                    </span>
+
+                    <strong id="modalTime">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        <i class="fas fa-circle-check"></i>
+                        Status
+                    </span>
+
+                    <strong id="modalStatus">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        <i class="fas fa-list-check"></i>
+                        Checks Passed
+                    </span>
+
+                    <strong id="modalChecks">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    class="secondary-btn"
+                    id="modalCloseBtn"
+                >
+                    Close
+                </button>
+
+                <a
+                    href="report.html"
+                    class="primary-btn"
+                    id="viewReportBtn"
+                >
+                    <i class="fas fa-file-lines"></i>
+                    View Report
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- JavaScript -->
+    <script src="history.js"></script>
+
+</body>
+</html>

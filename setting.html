@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>METRISCAN - Settings</title>
+
+    <link rel="stylesheet" href="setting.css">
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+
+            <div class="logo-box">
+                M
+            </div>
+
+            <div class="logo-text">
+                <div>METRI</div>
+                <div>SCAN</div>
+            </div>
+
+        </div>
+
+        <p class="brand-tagline">
+            Legal Metrology • Smart Verification
+        </p>
+
+
+        <!-- Navigation -->
+
+        <nav class="navigation">
+
+            <a href="dashboard.html" class="nav-link">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="scan.html" class="nav-link">
+                <span class="nav-icon">▣</span>
+                <span>Scan &amp; Verify</span>
+            </a>
+
+            <a href="history.html" class="nav-link">
+                <span class="nav-icon">◷</span>
+                <span>History</span>
+            </a>
+
+            <a href="reports.html" class="nav-link">
+                <span class="nav-icon">▤</span>
+                <span>Reports</span>
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                <span class="nav-icon">♙</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="setting.html" class="nav-link active">
+                <span class="nav-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+            <a href="scanner-checks.html" class="nav-link">
+                <span class="nav-icon">☑</span>
+                <span>Scanner Checks</span>
+            </a>
+
+        </nav>
+
+
+        <!-- Sidebar Bottom -->
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-divider"></div>
+
+            <p class="sidebar-message">
+                Ensuring Fair Trade<br>
+                <strong>For A Better Tomorrow</strong>
+            </p>
+
+            <p class="version">
+                METRISCAN v1.0.0
+            </p>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- Topbar -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-button"
+                id="menuButton"
+                aria-label="Open menu">
+                ☰
+            </button>
+
+            <div class="topbar-spacer"></div>
+
+
+            <button
+                class="notification"
+                id="notificationButton"
+                aria-label="Notifications">
+
+                ♧
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <div class="profile-area">
+
+                <div class="profile-avatar">
+                    ID
+                </div>
+
+                <div class="profile-info">
+
+                    <strong>
+                        Inspector Demo
+                    </strong>
+
+                    <span>
+                        Inspector
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= SETTINGS CONTENT ================= -->
+
+        <section class="settings-content">
+
+            <!-- Heading -->
+
+            <div class="page-heading">
+
+                <p class="eyebrow">
+                    SYSTEM • PREFERENCES
+                </p>
+
+                <h1>
+                    Settings
+                </h1>
+
+                <p class="heading-description">
+                    Manage your METRISCAN preferences and
+                    verification settings.
+                </p>
+
+            </div>
+
+
+            <!-- ================= SETTINGS LAYOUT ================= -->
+
+            <div class="settings-layout">
+
+
+                <!-- ================= SETTINGS MENU ================= -->
+
+                <aside class="settings-menu">
+
+                    <button
+                        class="settings-menu-item active"
+                        data-section="account">
+
+                        <span class="settings-menu-icon">
+                            ♙
+                        </span>
+
+                        <span>
+                            Account
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="settings-menu-item"
+                        data-section="notifications">
+
+                        <span class="settings-menu-icon">
+                            ♧
+                        </span>
+
+                        <span>
+                            Notifications
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="settings-menu-item"
+                        data-section="scanner">
+
+                        <span class="settings-menu-icon">
+                            ▣
+                        </span>
+
+                        <span>
+                            Scanner
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="settings-menu-item"
+                        data-section="reports">
+
+                        <span class="settings-menu-icon">
+                            ▤
+                        </span>
+
+                        <span>
+                            Reports
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="settings-menu-item"
+                        data-section="appearance">
+
+                        <span class="settings-menu-icon">
+                            ◐
+                        </span>
+
+                        <span>
+                            Appearance
+                        </span>
+
+                    </button>
+
+                </aside>
+
+
+                <!-- ================= PANELS ================= -->
+
+                <div class="settings-panels">
+
+
+                    <!-- ================= ACCOUNT ================= -->
+
+                    <section
+                        class="settings-panel active"
+                        id="account">
+
+                        <div class="panel-header">
+
+                            <div class="panel-icon">
+                                ♙
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Account Settings
+                                </h2>
+
+                                <p>
+                                    Manage your inspector information.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="fullName">
+                                    Full Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="fullName"
+                                    value="Inspector Demo"
+                                    placeholder="Enter your name">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="role">
+                                    Role
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="role"
+                                    value="Inspector"
+                                    placeholder="Enter your role">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="email">
+                                    Email Address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value="inspector@metriscan.com"
+                                    placeholder="Enter your email">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="organization">
+                                    Organization
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="organization"
+                                    value="Legal Metrology Department"
+                                    placeholder="Enter organization">
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================= NOTIFICATIONS ================= -->
+
+                    <section
+                        class="settings-panel"
+                        id="notifications">
+
+                        <div class="panel-header">
+
+                            <div class="panel-icon">
+                                ♧
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Notifications
+                                </h2>
+
+                                <p>
+                                    Choose which notifications you want
+                                    to receive.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Scan Completed
+                                </h3>
+
+                                <p>
+                                    Get notified when product verification
+                                    is completed.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="scanNotification"
+                                    checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Compliance Alerts
+                                </h3>
+
+                                <p>
+                                    Receive alerts when a product has
+                                    compliance issues.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="complianceNotification"
+                                    checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Report Ready
+                                </h3>
+
+                                <p>
+                                    Get notified when a compliance report
+                                    is ready.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="reportNotification"
+                                    checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================= SCANNER ================= -->
+
+                    <section
+                        class="settings-panel"
+                        id="scanner">
+
+                        <div class="panel-header">
+
+                            <div class="panel-icon">
+                                ▣
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Scanner Preferences
+                                </h2>
+
+                                <p>
+                                    Configure how METRISCAN handles
+                                    product verification.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Automatic Verification
+                                </h3>
+
+                                <p>
+                                    Automatically begin compliance checking
+                                    after OCR extraction.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="autoVerification"
+                                    checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Require Manual Review
+                                </h3>
+
+                                <p>
+                                    Flag uncertain results for inspector
+                                    review before finalizing.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="manualReview">
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Save Scan History
+                                </h3>
+
+                                <p>
+                                    Store completed product scans in
+                                    your history.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="saveHistory"
+                                    checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================= REPORTS ================= -->
+
+                    <section
+                        class="settings-panel"
+                        id="reports">
+
+                        <div class="panel-header">
+
+                            <div class="panel-icon">
+                                ▤
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Report Preferences
+                                </h2>
+
+                                <p>
+                                    Configure how compliance reports
+                                    are handled.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Auto-save Reports
+                                </h3>
+
+                                <p>
+                                    Automatically save generated
+                                    compliance reports.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="autoSaveReports"
+                                    checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Include Rule References
+                                </h3>
+
+                                <p>
+                                    Include applicable verification
+                                    rule references in generated reports.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="ruleReferences"
+                                    checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-group report-format">
+
+                            <label for="reportFormat">
+                                Default Report Format
+                            </label>
+
+                            <select id="reportFormat">
+
+                                <option value="pdf">
+                                    PDF
+                                </option>
+
+                                <option value="excel">
+                                    Excel
+                                </option>
+
+                                <option value="both">
+                                    PDF + Excel
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================= APPEARANCE ================= -->
+
+                    <section
+                        class="settings-panel"
+                        id="appearance">
+
+                        <div class="panel-header">
+
+                            <div class="panel-icon">
+                                ◐
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Appearance
+                                </h2>
+
+                                <p>
+                                    Customize the METRISCAN interface.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- THEME -->
+
+                        <div class="form-group appearance-field">
+
+                            <label for="theme">
+                                Theme
+                            </label>
+
+                            <select id="theme">
+
+                                <option value="dark">
+                                    Dark
+                                </option>
+
+                                <option value="light">
+                                    Light
+                                </option>
+
+                            </select>
+
+                            <small>
+                                Choose the interface theme that is
+                                most comfortable for you.
+                            </small>
+
+                        </div>
+
+
+                        <!-- LANGUAGE -->
+
+                        <div class="form-group appearance-field">
+
+                            <label for="language">
+                                Language
+                            </label>
+
+                            <select id="language">
+
+                                <option value="english">
+                                    English
+                                </option>
+
+                                <option value="hindi">
+                                    Hindi
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- COMPACT MODE -->
+
+                        <div class="setting-option">
+
+                            <div>
+
+                                <h3>
+                                    Compact Interface
+                                </h3>
+
+                                <p>
+                                    Use a more compact layout for
+                                    dashboard and verification screens.
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="compactMode">
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================= ACTION BUTTONS ================= -->
+
+                    <div class="settings-actions">
+
+                        <button
+                            class="reset-button"
+                            id="resetButton">
+
+                            Reset to Default
+
+                        </button>
+
+
+                        <button
+                            class="save-button"
+                            id="saveButton">
+
+                            Save Changes
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- SAVE MESSAGE -->
+
+                    <div
+                        class="save-message"
+                        id="saveMessage">
+
+                        ✓ Settings saved successfully.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="setting.js"></script>
+
+</body>
+
+</html>
