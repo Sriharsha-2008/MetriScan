@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Metrology Rules | METRISCAN</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Rules CSS -->
+    <link rel="stylesheet" href="rules.css">
+</head>
+
+<body>
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <!-- LOGO -->
+        <div class="logo-container">
+
+            <div class="logo">
+                <span>METRI</span>
+                <span>SCAN</span>
+            </div>
+
+            <p class="logo-subtitle">
+                Legal Metrology • Smart Verification
+            </p>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="scan.html" class="nav-item">
+                <i class="fas fa-qrcode"></i>
+                <span>Scan & Verify</span>
+            </a>
+
+            <a href="history.html" class="nav-item">
+                <i class="fas fa-clock-rotate-left"></i>
+                <span>History</span>
+            </a>
+
+            <a href="reports.html" class="nav-item">
+                <i class="fas fa-file-lines"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+
+            <a href="setting.html" class="nav-item">
+                <i class="fas fa-gear"></i>
+                <span>Settings</span>
+            </a>
+
+            <a href="scanner-checks.html" class="nav-item">
+                <i class="fas fa-shield-halved"></i>
+                <span>Scanner Checks</span>
+            </a>
+
+            <a href="rules.html" class="nav-item active">
+                <i class="fas fa-scale-balanced"></i>
+                <span>Metrology Rules</span>
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR BOTTOM -->
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-status">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    System Online
+                </span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button
+                class="menu-btn"
+                id="menuBtn"
+                aria-label="Open menu"
+            >
+                <i class="fas fa-bars"></i>
+            </button>
+
+
+            <div class="topbar-title">
+                Metrology Rules
+            </div>
+
+
+            <!-- USER -->
+            <div class="topbar-user">
+
+                <div
+                    class="user-avatar"
+                    id="rulesAvatar"
+                >
+                    ID
+                </div>
+
+                <div class="user-info">
+
+                    <span
+                        class="user-name"
+                        id="rulesUserName"
+                    >
+                        Inspector Demo
+                    </span>
+
+                    <span
+                        class="user-role"
+                        id="rulesUserRole"
+                    >
+                        Inspector
+                    </span>
+
+                </div>
+
+                <a
+                    href="profile.html"
+                    class="profile-link"
+                    title="View Profile"
+                >
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================================
+             PAGE CONTENT
+        ========================================== -->
+
+        <section class="page-content">
+
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+
+                <div class="page-heading">
+
+                    <div class="heading-icon">
+                        <i class="fas fa-scale-balanced"></i>
+                    </div>
+
+                    <div>
+
+                        <h1>
+                            Metrology Rules
+                        </h1>
+
+                        <p>
+                            Reference declarations checked by
+                            METRISCAN for packaged commodities.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 INTRODUCTION CARD
+            ====================================== -->
+
+            <div class="intro-card">
+
+                <div class="intro-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+
+                <div class="intro-content">
+
+                    <h2>
+                        Legal Metrology Compliance Checklist
+                    </h2>
+
+                    <p>
+                        METRISCAN uses these declarations as
+                        reference points when analyzing product
+                        packaging and labels.
+                    </p>
+
+                </div>
+
+                <div class="rule-count">
+
+                    <strong>
+                        12
+                    </strong>
+
+                    <span>
+                        Rules
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 SEARCH & FILTER
+            ====================================== -->
+
+            <div class="filter-card">
+
+                <div class="search-box">
+
+                    <i class="fas fa-search"></i>
+
+                    <input
+                        type="text"
+                        id="ruleSearch"
+                        placeholder="Search rules, declarations or checks..."
+                    >
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="applicabilityFilter">
+                        Applicability
+                    </label>
+
+                    <select id="applicabilityFilter">
+
+                        <option value="all">
+                            All Rules
+                        </option>
+
+                        <option value="mandatory">
+                            Mandatory
+                        </option>
+
+                        <option value="applicable">
+                            Where Applicable
+                        </option>
+
+                        <option value="imported">
+                            Imported Products
+                        </option>
+
+                        <option value="conditional">
+                            Conditional
+                        </option>
+
+                        <option value="commodity">
+                            Commodity-dependent
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="reset-btn"
+                    id="resetRules"
+                >
+                    <i class="fas fa-rotate-left"></i>
+                    Reset
+                </button>
+
+            </div>
+
+
+            <!-- =====================================
+                 RULES TABLE
+            ====================================== -->
+
+            <div class="rules-card">
+
+                <div class="rules-header">
+
+                    <div>
+
+                        <h2>
+                            Scanner Compliance Rules
+                        </h2>
+
+                        <p>
+                            Declarations and information that
+                            the scanner should verify.
+                        </p>
+
+                    </div>
+
+                    <span
+                        class="visible-count"
+                        id="visibleCount"
+                    >
+                        12 Rules
+                    </span>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table class="rules-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    No.
+                                </th>
+
+                                <th>
+                                    Rule / Declaration
+                                </th>
+
+                                <th>
+                                    Applicability
+                                </th>
+
+                                <th>
+                                    What the Scanner Should Check
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="rulesTableBody">
+
+                            <!-- JavaScript will insert rules here -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- EMPTY STATE -->
+
+                <div
+                    class="empty-state"
+                    id="emptyState"
+                >
+
+                    <div class="empty-icon">
+                        <i class="fas fa-magnifying-glass"></i>
+                    </div>
+
+                    <h3>
+                        No Rules Found
+                    </h3>
+
+                    <p>
+                        Try a different search or applicability filter.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 SCANNER FLOW
+            ====================================== -->
+
+            <div class="scanner-flow-card">
+
+                <div class="flow-heading">
+
+                    <div class="flow-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            How METRISCAN Uses These Rules
+                        </h2>
+
+                        <p>
+                            These declarations form the reference
+                            checklist during product verification.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="flow-steps">
+
+                    <div class="flow-step">
+
+                        <div class="step-number">
+                            01
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Scan Package
+                            </h3>
+
+                            <p>
+                                Capture or upload the product
+                                package or label.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="flow-line"></div>
+
+
+                    <div class="flow-step">
+
+                        <div class="step-number">
+                            02
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Extract Information
+                            </h3>
+
+                            <p>
+                                OCR extracts relevant text from
+                                the package.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="flow-line"></div>
+
+
+                    <div class="flow-step">
+
+                        <div class="step-number">
+                            03
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Check Declarations
+                            </h3>
+
+                            <p>
+                                Extracted information is compared
+                                against applicable rules.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="flow-line"></div>
+
+
+                    <div class="flow-step">
+
+                        <div class="step-number">
+                            04
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Generate Result
+                            </h3>
+
+                            <p>
+                                METRISCAN presents compliance
+                                findings and exceptions.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- JavaScript -->
+    <script src="rules.js"></script>
+
+</body>
+
+</html>
