@@ -472,21 +472,53 @@ def evaluate_rule(
             "commodity_name"
         )
 
-        if value:
+        # OCR can confuse nutrition-panel labels with the product identity.
+        # These are not reliable common/generic product names.
+        invalid_candidates = {
+            "trans fat",
+            "saturated fat",
+            "total fat",
+            "protein",
+            "carbohydrate",
+            "energy",
+            "sodium",
+            "sugar",
+            "dietary fiber",
+            "ingredients",
+            "nutrition facts",
+            "nutrition information",
+            "net weight",
+            "net quantity",
+            "net qty",
+            "net wt",
+            "net volume",
+            "net vol",
+        }
 
+        normalized = re.sub(
+            r"[^a-z0-9]+",
+            " ",
+            str(value or "").lower()
+        ).strip()
+
+        if not value:
             return make_result(
                 rule,
-                "PASS",
-                "Common or generic commodity name was detected.",
-                {
-                    "value": value,
-                },
+                "MANUAL_REVIEW",
+                "Common/generic product identification could not be reliably extracted from OCR."
+            )
+
+        if normalized in invalid_candidates:
+            return make_result(
+                rule,
+                "MANUAL_REVIEW",
+                "OCR detected a nutrition, ingredient, or package-detail label instead of a reliable product identification."
             )
 
         return make_result(
             rule,
-            "NON_COMPLIANT",
-            "Common or generic commodity name was not detected.",
+            "PASS",
+            "Common/generic product identification was detected."
         )
 
     # =====================================================

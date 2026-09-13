@@ -14,7 +14,7 @@ COMPLIANCE_RULES = [
     {
         "id": "LM002",
         "field": "common_generic_name",
-        "description": "Common or generic name of the commodity",
+        "description": "Common / generic product identification declaration",
         "legal_reference": "Rule 6(1)(b)",
         "applicability": "retail_package",
         "automation": "ocr",

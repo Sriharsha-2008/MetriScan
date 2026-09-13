@@ -197,7 +197,7 @@ def generate_compliance_report(
     # Product details
     story.append(Paragraph("1. Product Details", h1))
     fields = [
-        ("Commodity Name", product.get("commodity_name")),
+
         ("Manufacturer", product.get("manufacturer")),
         ("Packer", product.get("packer")),
         ("Importer", product.get("importer")),
@@ -287,7 +287,10 @@ def generate_compliance_report(
         evidence = r.get("evidence") or {}
 
         evidence_text = reason
-        if evidence:
+
+        # LM002 may use commodity_name internally, but the user-facing
+        # PDF must not display the commodity name/value.
+        if evidence and str(r.get("rule_id", "")).upper() != "LM002":
             pieces = []
             for ek, ev in evidence.items():
                 if ev is not None and str(ev).strip():
