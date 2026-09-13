@@ -76,6 +76,13 @@ def _full_text(records):
 
 
 def _normalise_ocr_text(text):
+    """
+    Conservative OCR normalisation.
+
+    Only obvious OCR formatting/spelling corrections are made.
+    No product information is invented.
+    """
+
     text = _clean_text(text)
 
     replacements = {
@@ -93,7 +100,7 @@ def _normalise_ocr_text(text):
 
 
 # ============================================================
-# GENERAL PATTERNS
+# PATTERNS
 # ============================================================
 
 DECLARATION_LABEL_PATTERNS = [
@@ -102,6 +109,8 @@ DECLARATION_LABEL_PATTERNS = [
     r"unit\s+sale\s+price",
     r"net\s+qty",
     r"net\s+quantity",
+    r"net\s+(?:wt|weight|vol|volume)",
+    r"net\s+weight\s*\(\s*when\s+packed\s*\)",
     r"\bmfd\b",
     r"manufactur",
     r"packing\s+date",
@@ -144,8 +153,14 @@ LEGAL_PATTERNS = [
     r"barcode",
     r"batch\s*no",
     r"lot\s*no",
+    r"address",
     r"corporate\s+office",
     r"registered\s+office",
+    r"manufactured\s+by",
+    r"marketed\s+by",
+    r"manufactured\s+for",
+    r"imported\s+by",
+    r"packed\s+by",
 ]
 
 
@@ -153,11 +168,7 @@ def _matches_any(text, patterns):
     low = text.lower()
 
     return any(
-        re.search(
-            pattern,
-            low,
-            re.I,
-        )
+        re.search(pattern, low, re.I)
         for pattern in patterns
     )
 
@@ -171,31 +182,19 @@ def _is_declaration_label(text):
 
 def _is_contact_or_legal(text):
     return (
-        _matches_any(
-            text,
-            CONTACT_PATTERNS,
-        )
+        _matches_any(text, CONTACT_PATTERNS)
         or
-        _matches_any(
-            text,
-            LEGAL_PATTERNS,
-        )
+        _matches_any(text, LEGAL_PATTERNS)
     )
 
 
 def _looks_numeric_or_code(text):
     digits = len(
-        re.findall(
-            r"\d",
-            text,
-        )
+        re.findall(r"\d", text)
     )
 
     letters = len(
-        re.findall(
-            r"[A-Za-z]",
-            text,
-        )
+        re.findall(r"[A-Za-z]", text)
     )
 
     if digits >= 5 and digits > letters:
@@ -221,54 +220,30 @@ def _looks_like_email(text):
     )
 
 
-# ============================================================
-# PHONE DETECTION
-# ============================================================
-
-def _find_toll_free_phone(text):
-    """
-    Handles Indian toll-free formats including:
-
-        1800 22 4020
-        1800-22-4020
-        1800224020
-        1800 123 4567
-        1800-123-4567
-    """
-
-    patterns = [
-        # Example: 1800 22 4020
-        r"\b1800[\s\-]?\d{2}[\s\-]?\d{4}\b",
-
-        # Example: 1800 123 4567
-        r"\b1800[\s\-]?\d{3}[\s\-]?\d{4}\b",
-
-        # Example: 1800 1234 567
-        r"\b1800[\s\-]?\d{4}[\s\-]?\d{3}\b",
-
-        # Example: 18001234567
-        r"\b1800\d{7}\b",
-    ]
-
-    for pattern in patterns:
-        match = re.search(
-            pattern,
+def _looks_like_phone(text):
+    return bool(
+        re.search(
+            r"\b1800[\s\-]?\d{3}[\s\-]?\d{4}\b",
             text,
             re.I,
         )
-
-        if match:
-            return match.group(0)
-
-    return None
-
-
-def _looks_like_phone(text):
-    return _find_toll_free_phone(text) is not None
+        or
+        re.search(
+            r"\b1800[\s\-]?\d{4}[\s\-]?\d{3}\b",
+            text,
+            re.I,
+        )
+        or
+        re.search(
+            r"\b1800[\s\-]?\d{7}\b",
+            text,
+            re.I,
+        )
+    )
 
 
 # ============================================================
-# COMPANY DETECTION
+# MANUFACTURER
 # ============================================================
 
 COMPANY_SUFFIX_PATTERN = re.compile(
@@ -299,7 +274,6 @@ def _extract_company_from_text(text):
     cleaned = re.sub(
         r"^(manufactured\s+by|"
         r"manufactured\s+for|"
-        r"manufactured\s+at|"
         r"marketed\s+by|"
         r"packed\s+by|"
         r"imported\s+by|"
@@ -324,25 +298,23 @@ def _extract_company_from_text(text):
     return cleaned.rstrip(".,:;")
 
 
-# ============================================================
-# MANUFACTURER
-# ============================================================
-
 def extract_manufacturer(records):
     items = _records_with_text(records)
+
+    # --------------------------------------------------------
+    # Explicit manufacturer declarations
+    # --------------------------------------------------------
 
     patterns = [
         r"manufacturer\s*[:\-]\s*(.+)",
         r"manufactured\s+by\s*[:\-]?\s*(.+)",
         r"manufactured\s+for\s*[:\-]?\s*(.+)",
-        r"manufactured\s+at\s*[:\-]?\s*(.+)",
     ]
 
     for item in items:
         text = item["text"]
 
         for pattern in patterns:
-
             match = re.search(
                 pattern,
                 text,
@@ -350,7 +322,6 @@ def extract_manufacturer(records):
             )
 
             if match:
-
                 candidate = _clean_text(
                     match.group(1)
                 )
@@ -367,12 +338,17 @@ def extract_manufacturer(records):
                         ".,:;"
                     )
 
+    # --------------------------------------------------------
+    # Standalone company-name detection
+    # --------------------------------------------------------
+
     candidates = []
 
     for item in items:
+        text = item["text"]
 
         company = _extract_company_from_text(
-            item["text"]
+            text
         )
 
         if not company:
@@ -398,7 +374,6 @@ def extract_manufacturer(records):
         )
 
     if candidates:
-
         candidates.sort(
             key=lambda x: x[0],
             reverse=True,
@@ -407,195 +382,6 @@ def extract_manufacturer(records):
         return candidates[0][1]
 
     return None
-
-
-# ============================================================
-# ADDRESS DETECTION
-# ============================================================
-
-ADDRESS_HINTS = [
-    r"\broad\b",
-    r"\bstreet\b",
-    r"\bst\.\b",
-    r"\blane\b",
-    r"\bindustrial\b",
-    r"\bindustrial\s+area\b",
-    r"\bindustrial\s+estate\b",
-    r"\bestate\b",
-    r"\barea\b",
-    r"\bplot\b",
-    r"\bphase\b",
-    r"\bsector\b",
-    r"\bvillage\b",
-    r"\bdistrict\b",
-    r"\bcity\b",
-    r"\btown\b",
-    r"\bstate\b",
-    r"\bnagar\b",
-    r"\bcolony\b",
-    r"\bpark\b",
-    r"\bhighway\b",
-    r"\bbypass\b",
-    r"\bpin\b",
-    r"\b\d{6}\b",
-]
-
-
-def _looks_like_address(text):
-    if not text:
-        return False
-
-    if _looks_like_email(text):
-        return False
-
-    if _looks_like_phone(text):
-        return False
-
-    if _matches_any(
-        text,
-        [
-            r"fssai",
-            r"licen[cs]e",
-            r"gst",
-            r"barcode",
-        ],
-    ):
-        return False
-
-    if _matches_any(
-        text,
-        ADDRESS_HINTS,
-    ):
-        return True
-
-    if text.count(",") >= 2:
-        return True
-
-    return False
-
-
-def _collect_address_lines(
-    items,
-    start_index,
-):
-    address_parts = []
-
-    for j in range(
-        start_index,
-        min(
-            start_index + 5,
-            len(items),
-        ),
-    ):
-
-        text = items[j]["text"]
-
-        if not text:
-            continue
-
-        if _looks_like_email(text):
-            continue
-
-        if _looks_like_phone(text):
-            continue
-
-        if re.search(
-            r"^(consumer|customer|call|email)",
-            text,
-            re.I,
-        ):
-            break
-
-        if _is_declaration_label(text):
-            break
-
-        if _matches_any(
-            text,
-            [
-                r"fssai",
-                r"licen[cs]e",
-                r"gst",
-                r"barcode",
-            ],
-        ):
-            break
-
-        address_parts.append(text)
-
-    if not address_parts:
-        return None
-
-    address = ", ".join(
-        address_parts
-    )
-
-    address = _clean_text(address)
-
-    if len(address) < 8:
-        return None
-
-    return address
-
-
-def _extract_address_after_patterns(
-    items,
-    patterns,
-):
-    for i, item in enumerate(items):
-
-        text = item["text"]
-
-        for pattern in patterns:
-
-            match = re.search(
-                pattern,
-                text,
-                re.I,
-            )
-
-            if not match:
-                continue
-
-            remainder = _clean_text(
-                match.group(1)
-            )
-
-            if (
-                remainder
-                and
-                _looks_like_address(
-                    remainder
-                )
-            ):
-                return remainder.rstrip(
-                    ".,:;"
-                )
-
-            address = _collect_address_lines(
-                items,
-                i + 1,
-            )
-
-            if address:
-                return address
-
-    return None
-
-
-def extract_manufacturing_address(records):
-    items = _records_with_text(records)
-
-    patterns = [
-        r"manufactured\s+by\s*[:\-]?\s*(.*)",
-        r"manufactured\s+at\s*[:\-]?\s*(.*)",
-        r"manufacture\s+address\s*[:\-]?\s*(.*)",
-        r"manufacturing\s+address\s*[:\-]?\s*(.*)",
-    ]
-
-    return _extract_address_after_patterns(
-        items,
-        patterns,
-    )
 
 
 # ============================================================
@@ -611,11 +397,9 @@ def extract_packer(records):
     ]
 
     for item in items:
-
         text = item["text"]
 
         for pattern in patterns:
-
             match = re.search(
                 pattern,
                 text,
@@ -623,7 +407,6 @@ def extract_packer(records):
             )
 
             if match:
-
                 candidate = _clean_text(
                     match.group(1)
                 )
@@ -634,20 +417,6 @@ def extract_packer(records):
                     )
 
     return None
-
-
-def extract_packer_address(records):
-    items = _records_with_text(records)
-
-    patterns = [
-        r"packed\s+by\s*[:\-]?\s*(.*)",
-        r"packer\s+address\s*[:\-]?\s*(.*)",
-    ]
-
-    return _extract_address_after_patterns(
-        items,
-        patterns,
-    )
 
 
 # ============================================================
@@ -663,11 +432,9 @@ def extract_importer(records):
     ]
 
     for item in items:
-
         text = item["text"]
 
         for pattern in patterns:
-
             match = re.search(
                 pattern,
                 text,
@@ -675,7 +442,6 @@ def extract_importer(records):
             )
 
             if match:
-
                 candidate = _clean_text(
                     match.group(1)
                 )
@@ -684,71 +450,6 @@ def extract_importer(records):
                     return candidate.rstrip(
                         ".,:;"
                     )
-
-    return None
-
-
-def extract_importer_address(records):
-    items = _records_with_text(records)
-
-    patterns = [
-        r"imported\s+by\s*[:\-]?\s*(.*)",
-        r"importer\s+address\s*[:\-]?\s*(.*)",
-    ]
-
-    return _extract_address_after_patterns(
-        items,
-        patterns,
-    )
-
-
-# ============================================================
-# IMPORT STATUS
-# ============================================================
-
-def extract_is_imported(records):
-
-    items = _records_with_text(records)
-
-    full_text = " ".join(
-        item["text"]
-        for item in items
-    )
-
-    # Explicit imported evidence.
-    imported_patterns = [
-        r"\bimported\s+by\b",
-        r"\bimported\s+from\b",
-        r"\bimported\b",
-        r"\bcountry\s+of\s+origin\b",
-        r"\bproduct\s+of\b",
-    ]
-
-    for pattern in imported_patterns:
-
-        if re.search(
-            pattern,
-            full_text,
-            re.I,
-        ):
-            return True
-
-    # Explicit domestic evidence.
-    domestic_patterns = [
-        r"\bmade\s+in\s+india\b",
-        r"\bmanufactured\s+in\s+india\b",
-        r"\bproduced\s+in\s+india\b",
-        r"\bpacked\s+in\s+india\b",
-    ]
-
-    for pattern in domestic_patterns:
-
-        if re.search(
-            pattern,
-            full_text,
-            re.I,
-        ):
-            return False
 
     return None
 
@@ -767,11 +468,9 @@ def extract_country_of_origin(records):
     ]
 
     for item in items:
-
         text = item["text"]
 
         for pattern in patterns:
-
             match = re.search(
                 pattern,
                 text,
@@ -779,7 +478,6 @@ def extract_country_of_origin(records):
             )
 
             if match:
-
                 value = _clean_text(
                     match.group(1)
                 )
@@ -793,68 +491,29 @@ def extract_country_of_origin(records):
 
 
 # ============================================================
-# COMMODITY NAME
+# GENERIC COMMODITY NAME
 # ============================================================
-
-def _is_bad_commodity_candidate(text):
-    low = text.lower()
-
-    # Consumer-service/contact lines are NEVER
-    # product names.
-    bad_phrases = [
-        r"consumer\s+care",
-        r"consumer\s+service",
-        r"consumer\s+services",
-        r"customer\s+care",
-        r"customer\s+service",
-        r"customer\s+support",
-        r"contact\s+us",
-        r"call\s+us",
-        r"email\s+us",
-        r"feedback",
-        r"queries",
-        r"complaint",
-        r"the\s+consumer",
-    ]
-
-    if _matches_any(
-        low,
-        bad_phrases,
-    ):
-        return True
-
-    if _is_declaration_label(text):
-        return True
-
-    if _matches_any(
-        low,
-        LEGAL_PATTERNS,
-    ):
-        return True
-
-    if _looks_like_email(text):
-        return True
-
-    if _looks_like_phone(text):
-        return True
-
-    if _looks_numeric_or_code(text):
-        return True
-
-    if re.search(
-        r"https?://|www\.",
-        text,
-        re.I,
-    ):
-        return True
-
-    return False
-
 
 def _commodity_candidate_score(
     item,
     all_items,
 ):
+    """
+    Generic product-name scoring.
+
+    There is intentionally NO hard-coded list of:
+        chips
+        biscuits
+        soap
+        rice
+        flour
+        shampoo
+        etc.
+
+    The decision is based on OCR characteristics,
+    position and linguistic structure.
+    """
+
     text = item["text"]
     confidence = item["confidence"]
     box = item["box"]
@@ -862,8 +521,29 @@ def _commodity_candidate_score(
     if not text:
         return -1000
 
-    if _is_bad_commodity_candidate(
-        text
+    # --------------------------------------------------------
+    # Exclusions
+    # --------------------------------------------------------
+
+    if _looks_like_email(text):
+        return -1000
+
+    if _looks_like_phone(text):
+        return -1000
+
+    if _looks_numeric_or_code(text):
+        return -1000
+
+    if _is_declaration_label(text):
+        return -1000
+
+    if _is_contact_or_legal(text):
+        return -1000
+
+    if re.search(
+        r"https?://|www\.",
+        text,
+        re.I,
     ):
         return -1000
 
@@ -878,7 +558,15 @@ def _commodity_candidate_score(
     if len(words) > 12:
         return -1000
 
+    # --------------------------------------------------------
+    # Base confidence
+    # --------------------------------------------------------
+
     score = confidence * 2.0
+
+    # --------------------------------------------------------
+    # Alphabetic structure
+    # --------------------------------------------------------
 
     alpha_count = len(
         re.findall(
@@ -900,17 +588,17 @@ def _commodity_candidate_score(
     if digit_count == 0:
         score += 0.25
 
+    # Product descriptions often have several words.
     if 2 <= len(words) <= 8:
         score += 0.5
 
-    if (
-        len(words) == 1
-        and len(text) >= 4
-    ):
+    if len(words) == 1 and len(text) >= 4:
         score += 0.2
 
-    # Product name is usually near upper/middle
-    # portion of the package.
+    # --------------------------------------------------------
+    # Relative vertical position
+    # --------------------------------------------------------
+
     if all_items:
 
         ys = [
@@ -928,15 +616,17 @@ def _commodity_candidate_score(
 
                 relative_y = (
                     box[1] - min_y
-                ) / (
-                    max_y - min_y
-                )
+                ) / (max_y - min_y)
 
                 if relative_y < 0.45:
                     score += 0.35
 
                 if relative_y > 0.85:
                     score -= 0.25
+
+    # --------------------------------------------------------
+    # Typography clues
+    # --------------------------------------------------------
 
     uppercase_letters = sum(
         1
@@ -966,7 +656,6 @@ def _commodity_candidate_score(
 
 
 def extract_commodity_name(records):
-
     items = _records_with_text(records)
 
     if not items:
@@ -1013,7 +702,6 @@ def extract_commodity_name(records):
 # ============================================================
 
 def _valid_quantity_number(number_text):
-
     try:
         value = float(
             number_text
@@ -1033,15 +721,10 @@ def _valid_quantity_number(number_text):
 
 
 def extract_net_quantity(records):
-
     items = _records_with_text(records)
 
     patterns = [
-        r"net\s+qty\s*[:\-]?\s*"
-        r"(\d+(?:\.\d+)?)\s*"
-        r"(kg|g|mg|l|ml|cl|litre|liter|litres|liters)",
-
-        r"net\s+quantity\s*[:\-]?\s*"
+        r"net\s+(?:qty|quantity|wt|weight|vol|volume)\s*[:\-]?\s*"
         r"(\d+(?:\.\d+)?)\s*"
         r"(kg|g|mg|l|ml|cl|litre|liter|litres|liters)",
     ]
@@ -1071,10 +754,11 @@ def extract_net_quantity(records):
                         unit.lower(),
                     )
 
+    # Nearby-line search
     for i, item in enumerate(items):
 
         if not re.search(
-            r"net\s+(qty|quantity)",
+            r"net\s+(qty|quantity|wt|weight|vol|volume)",
             item["text"],
             re.I,
         ):
@@ -1083,15 +767,13 @@ def extract_net_quantity(records):
         nearby = " ".join(
             x["text"]
             for x in items[
-                i:min(
-                    i + 4,
-                    len(items),
-                )
+                i:min(i + 4, len(items))
             ]
         )
 
         match = re.search(
-            r"net\s+(?:qty|quantity)"
+            r"net\s+(?:qty|quantity|wt|weight|vol|volume)"
+            r"(?:\s*\(\s*when\s+packed\s*\))?"
             r"\s*[:\-]?\s*"
             r"(\d+(?:\.\d+)?)\s*"
             r"(kg|g|mg|l|ml|cl|litre|liter|litres|liters)",
@@ -1120,7 +802,6 @@ def extract_net_quantity(records):
 # ============================================================
 
 def extract_mrp(records):
-
     items = _records_with_text(records)
 
     patterns = [
@@ -1158,6 +839,7 @@ def extract_mrp(records):
                 ) <= 5:
                     return value
 
+        # OCR may split MRP and its value.
         if re.fullmatch(
             r"mrp",
             text,
@@ -1167,10 +849,7 @@ def extract_mrp(records):
             nearby = " ".join(
                 x["text"]
                 for x in items[
-                    i:min(
-                        i + 3,
-                        len(items),
-                    )
+                    i:min(i + 3, len(items))
                 ]
             )
 
@@ -1193,7 +872,6 @@ def extract_mrp(records):
 # ============================================================
 
 def extract_unit_sale_price(records):
-
     items = _records_with_text(records)
 
     for i, item in enumerate(items):
@@ -1222,10 +900,7 @@ def extract_unit_sale_price(records):
         nearby = " ".join(
             x["text"]
             for x in items[
-                i:min(
-                    i + 3,
-                    len(items),
-                )
+                i:min(i + 3, len(items))
             ]
         )
 
@@ -1245,7 +920,7 @@ def extract_unit_sale_price(records):
 
 
 # ============================================================
-# DATES
+# DATE EXTRACTION
 # ============================================================
 
 DATE_PATTERN = (
@@ -1261,75 +936,69 @@ DATE_PATTERN = (
 )
 
 
-def _extract_date_near_label(
-    items,
-    label_pattern,
-):
+def _extract_dates(text):
+    """Return all date-like values in OCR text, preserving order."""
+    return [m.group(1) for m in re.finditer(DATE_PATTERN, text, re.I)]
 
+
+def _extract_date_near_label(items, label_pattern, occurrence=0):
+    """Extract the date nearest to a declaration label.
+
+    Handles labels and values split across OCR boxes. For combined
+    ``MFD & USE BY`` declarations, occurrence=0 returns the first date and
+    occurrence=1 returns the second date found in the nearby declaration.
+    """
     for i, item in enumerate(items):
-
         text = item["text"]
-
-        if not re.search(
-            label_pattern,
-            text,
-            re.I,
-        ):
+        if not re.search(label_pattern, text, re.I):
             continue
 
-        match = re.search(
-            DATE_PATTERN,
-            text,
-            re.I,
-        )
+        dates = _extract_dates(text)
+        if len(dates) > occurrence:
+            return dates[occurrence]
 
-        if match:
-            return match.group(1)
+        # Search a generous but bounded OCR neighborhood. This covers the
+        # common case where the label and one/two dates are separate boxes.
+        nearby_items = items[i:min(i + 8, len(items))]
+        nearby_dates = []
+        for x in nearby_items:
+            nearby_dates.extend(_extract_dates(x["text"]))
 
-        nearby = " ".join(
-            x["text"]
-            for x in items[
-                i:min(
-                    i + 4,
-                    len(items),
-                )
-            ]
-        )
-
-        match = re.search(
-            DATE_PATTERN,
-            nearby,
-            re.I,
-        )
-
-        if match:
-            return match.group(1)
+        if len(nearby_dates) > occurrence:
+            return nearby_dates[occurrence]
 
     return None
 
 
 def extract_manufacture_date(records):
-
     items = _records_with_text(records)
 
-    return _extract_date_near_label(
+    value = _extract_date_near_label(
         items,
         r"\b(mfd|manufactured|manufacture)\b",
+        occurrence=0,
+    )
+    if value:
+        return value
+
+    # Combined declaration used on many packages.
+    return _extract_date_near_label(
+        items,
+        r"mfd\s*&\s*use\s*by",
+        occurrence=0,
     )
 
 
 def extract_packing_date(records):
-
     items = _records_with_text(records)
 
     return _extract_date_near_label(
         items,
-        r"\b(packed|packing|pkd)\b",
+        r"\b(?:packed\s+on|packing\s+date|pkd)\b",
     )
 
 
 def extract_best_before(records):
-
     items = _records_with_text(records)
 
     return _extract_date_near_label(
@@ -1339,12 +1008,22 @@ def extract_best_before(records):
 
 
 def extract_use_by(records):
-
     items = _records_with_text(records)
+
+    # A combined ``MFD & USE BY`` label contains two dates. Handle it first
+    # so the manufacture date is not incorrectly reused as the use-by date.
+    combined = _extract_date_near_label(
+        items,
+        r"mfd\s*&\s*use\s*by",
+        occurrence=1,
+    )
+    if combined:
+        return combined
 
     return _extract_date_near_label(
         items,
         r"use\s+by",
+        occurrence=0,
     )
 
 
@@ -1353,6 +1032,13 @@ def extract_use_by(records):
 # ============================================================
 
 def extract_consumer_care(records):
+    """
+    Extract consumer-care information conservatively.
+
+    We specifically avoid treating arbitrary numbers as
+    telephone numbers because OCR may confuse licence/FSSAI/
+    registration numbers with contact numbers.
+    """
 
     items = _records_with_text(records)
 
@@ -1361,13 +1047,19 @@ def extract_consumer_care(records):
         for item in items
     ]
 
+    phone_patterns = [
+        r"\b1800[\s\-]?\d{3}[\s\-]?\d{4}\b",
+        r"\b1800[\s\-]?\d{4}[\s\-]?\d{3}\b",
+        r"\b1800[\s\-]?\d{7}\b",
+    ]
+
     email_pattern = (
         r"\b[A-Z0-9._%+\-]+"
         r"@[A-Z0-9.\-]+\.[A-Z]{2,}\b"
     )
 
     # --------------------------------------------------------
-    # Search around consumer-care/service text
+    # 1. Search around consumer-care labels
     # --------------------------------------------------------
 
     for i, text in enumerate(texts):
@@ -1381,18 +1073,24 @@ def extract_consumer_care(records):
         nearby = " ".join(
             texts[
                 max(0, i - 1):
-                min(
-                    len(texts),
-                    i + 5,
-                )
+                min(len(texts), i + 4)
             ]
         )
 
-        phone = _find_toll_free_phone(
-            nearby
-        )
+        phone_match = None
 
-        email = re.search(
+        for pattern in phone_patterns:
+
+            phone_match = re.search(
+                pattern,
+                nearby,
+                re.I,
+            )
+
+            if phone_match:
+                break
+
+        email_match = re.search(
             email_pattern,
             nearby,
             re.I,
@@ -1400,22 +1098,23 @@ def extract_consumer_care(records):
 
         result = []
 
-        if phone:
+        if phone_match:
             result.append(
-                "Phone: " + phone
+                "Phone: "
+                + phone_match.group(0)
             )
 
-        if email:
+        if email_match:
             result.append(
                 "Email: "
-                + email.group(0)
+                + email_match.group(0)
             )
 
         if result:
             return "; ".join(result)
 
     # --------------------------------------------------------
-    # Explicit CALL US / EMAIL US
+    # 2. Explicit CALL US / EMAIL US
     # --------------------------------------------------------
 
     full_text = " ".join(texts)
@@ -1426,11 +1125,20 @@ def extract_consumer_care(records):
         re.I,
     ):
 
-        phone = _find_toll_free_phone(
-            full_text
-        )
+        phone_match = None
 
-        email = re.search(
+        for pattern in phone_patterns:
+
+            phone_match = re.search(
+                pattern,
+                full_text,
+                re.I,
+            )
+
+            if phone_match:
+                break
+
+        email_match = re.search(
             email_pattern,
             full_text,
             re.I,
@@ -1438,45 +1146,58 @@ def extract_consumer_care(records):
 
         result = []
 
-        if phone:
+        if phone_match:
             result.append(
-                "Phone: " + phone
+                "Phone: "
+                + phone_match.group(0)
             )
 
-        if email:
+        if email_match:
             result.append(
                 "Email: "
-                + email.group(0)
+                + email_match.group(0)
             )
 
         if result:
             return "; ".join(result)
 
     # --------------------------------------------------------
-    # Toll-free fallback
+    # 3. Toll-free fallback
     # --------------------------------------------------------
 
-    phone = _find_toll_free_phone(
-        full_text
-    )
+    phone_match = None
 
-    if phone:
-        return "Phone: " + phone
+    for pattern in phone_patterns:
+
+        phone_match = re.search(
+            pattern,
+            full_text,
+            re.I,
+        )
+
+        if phone_match:
+            break
+
+    if phone_match:
+        return (
+            "Phone: "
+            + phone_match.group(0)
+        )
 
     # --------------------------------------------------------
-    # Email fallback
+    # 4. Email fallback
     # --------------------------------------------------------
 
-    email = re.search(
+    email_match = re.search(
         email_pattern,
         full_text,
         re.I,
     )
 
-    if email:
+    if email_match:
         return (
             "Email: "
-            + email.group(0)
+            + email_match.group(0)
         )
 
     return None
@@ -1487,6 +1208,11 @@ def extract_consumer_care(records):
 # ============================================================
 
 def extract_package_type(records):
+    """
+    Conservative package-type extraction.
+
+    This is independent of commodity category.
+    """
 
     full = _full_text(records).lower()
 
@@ -1518,42 +1244,23 @@ def extract_package_type(records):
 
 
 # ============================================================
-# MAIN EXTRACTION
+# MAIN FIELD EXTRACTION
 # ============================================================
 
 def extract_fields(records):
+    """
+    Main field-extraction entry point.
+    """
 
     manufacturer = extract_manufacturer(
         records
-    )
-
-    manufacturing_address = (
-        extract_manufacturing_address(
-            records
-        )
     )
 
     packer = extract_packer(
         records
     )
 
-    packer_address = (
-        extract_packer_address(
-            records
-        )
-    )
-
     importer = extract_importer(
-        records
-    )
-
-    importer_address = (
-        extract_importer_address(
-            records
-        )
-    )
-
-    is_imported = extract_is_imported(
         records
     )
 
@@ -1573,22 +1280,16 @@ def extract_fields(records):
         records
     )
 
-    unit_sale_price = (
-        extract_unit_sale_price(
-            records
-        )
+    unit_sale_price = extract_unit_sale_price(
+        records
     )
 
-    manufacture_date = (
-        extract_manufacture_date(
-            records
-        )
+    manufacture_date = extract_manufacture_date(
+        records
     )
 
-    packing_date = (
-        extract_packing_date(
-            records
-        )
+    packing_date = extract_packing_date(
+        records
     )
 
     best_before = extract_best_before(
@@ -1612,58 +1313,36 @@ def extract_fields(records):
 
         "manufacturer": manufacturer,
 
-        "manufacturing_address":
-            manufacturing_address,
-
         "packer": packer,
-
-        "packer_address":
-            packer_address,
 
         "importer": importer,
 
-        "importer_address":
-            importer_address,
+        "country_of_origin": country,
 
-        "is_imported": is_imported,
+        "net_quantity": net_quantity,
 
-        "country_of_origin":
-            country,
+        "unit": unit,
 
-        "net_quantity":
-            net_quantity,
+        "mrp": mrp,
 
-        "unit":
-            unit,
+        "manufacture_date": manufacture_date,
 
-        "mrp":
-            mrp,
+        "packing_date": packing_date,
 
-        "manufacture_date":
-            manufacture_date,
+        "best_before": best_before,
 
-        "packing_date":
-            packing_date,
+        "use_by": use_by,
 
-        "best_before":
-            best_before,
+        "consumer_care": consumer_care,
 
-        "use_by":
-            use_by,
+        "unit_sale_price": unit_sale_price,
 
-        "consumer_care":
-            consumer_care,
-
-        "unit_sale_price":
-            unit_sale_price,
-
-        "package_type":
-            package_type,
+        "package_type": package_type,
     }
 
 
 # ============================================================
-# PIPELINE INTERFACE
+# PIPELINE COMPATIBILITY
 # ============================================================
 
 def extract_product_record(
@@ -1671,7 +1350,14 @@ def extract_product_record(
     declaration_data=None,
 ):
     """
-    Interface required by pipeline.py.
+    Compatibility entry point used by pipeline.py.
+
+    pipeline.py passes two arguments:
+        records
+        declaration_data
+
+    The declaration data is used only to fill fields
+    that the main extractor could not find.
     """
 
     product = extract_fields(
@@ -1684,38 +1370,18 @@ def extract_product_record(
     ):
 
         field_mapping = {
-            "net_quantity":
-                "net_quantity",
-
-            "unit":
-                "unit",
-
-            "mrp":
-                "mrp",
-
-            "manufacture_date":
-                "manufacture_date",
-
-            "packing_date":
-                "packing_date",
-
-            "best_before":
-                "best_before",
-
-            "use_by":
-                "use_by",
-
-            "consumer_care":
-                "consumer_care",
-
-            "unit_sale_price":
-                "unit_sale_price",
+            "net_quantity": "net_quantity",
+            "unit": "unit",
+            "mrp": "mrp",
+            "manufacture_date": "manufacture_date",
+            "packing_date": "packing_date",
+            "best_before": "best_before",
+            "use_by": "use_by",
+            "consumer_care": "consumer_care",
+            "unit_sale_price": "unit_sale_price",
         }
 
-        for (
-            source_field,
-            product_field
-        ) in field_mapping.items():
+        for source_field, product_field in field_mapping.items():
 
             value = declaration_data.get(
                 source_field
@@ -1746,7 +1412,6 @@ def extract_product_fields(records):
 
 
 def extract_declarations(records):
-
     fields = extract_fields(
         records
     )

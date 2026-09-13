@@ -13,7 +13,15 @@ OUTPUT_DIR.mkdir(
 
 
 # Minimum OCR confidence accepted by the pipeline.
-OCR_MIN_CONFIDENCE = 0.50
+OCR_MIN_CONFIDENCE = 0.25
+# Keep weak OCR for layout/field recovery; do not delete it in OCR parser.
+OCR_KEEP_CONFIDENCE = 0.40
+
+# Geometry/search tuning for declaration association.
+OCR_MAX_FIELD_VERTICAL_FACTOR = 6.0
+OCR_MAX_FIELD_HORIZONTAL_FACTOR = 16.0
+FIELD_ACCEPT_SCORE = 8.0
+FIELD_VERIFY_SCORE = 4.5
 
 
 # ============================================================
@@ -126,8 +134,11 @@ DATE_PATTERNS = [
     # 12/2026
     r"\b\d{1,2}[/-]\d{2,4}\b",
 
+    # Compact month/year and common separators: 08.2026 / 08-2026
+    r"\b\d{1,2}[.]\d{2,4}\b",
+
     # AUG 2026 / AUGUST 2026
-    r"\b(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*\s+\d{2,4}\b",
+    r"\b(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*[ .,-]+\d{2,4}\b",
 
     # BEST BEFORE 6 MONTHS / 30 DAYS
     r"\b\d{1,2}\s+(?:MONTH|MONTHS|DAYS|DAY)\b",
